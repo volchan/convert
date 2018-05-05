@@ -10,4 +10,6 @@ app.on("ready", () => {
     width: 800,
     webPreferences: { backgroundThrottling: false }
   });
+
+  mainWindow.loadURL(`file://${__dirname}/src/index.html`)
 });
