@@ -2,7 +2,7 @@ const electron = require("electron");
 
 const { app, BrowserWindow } = electron;
 
-let mainWindow;
+let mainWindow, tray;
 
 app.on("ready", () => {
   mainWindow = new BrowserWindow({
