@@ -33,10 +33,19 @@ ipcMain.on("videos:added", (event, videos) => {
 });
 
 ipcMain.on("conversion:start", (event, videos) => {
-  const video = videos[0];
-  const outputDirectory = video.path.split(video.name)[0];
-  const outputName = video.name.split(".")[0];
-  const outputPath = `${outputDirectory}${outputName}${video.format}`;
+  _.each(videos, video => {
+    const outputDirectory = video.path.split(video.name)[0];
+    const outputName = video.name.split(".")[0];
+    const outputPath = `${outputDirectory}${outputName}.${video.format}`;
 
-  ffmpeg(video.path).output(outputPath);
+    ffmpeg(video.path)
+      .output(outputPath)
+      .on("progress", progress => {
+        mainWindow.webContents.send("conversion:progress", { video, progress });
+      })
+      .on("end", () => {
+        mainWindow.webContents.send("conversion:end", { video, outputPath });
+      })
+      .run();
+  });
 });
